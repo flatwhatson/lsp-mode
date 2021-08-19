@@ -7337,10 +7337,6 @@ returns the command to execute."
   (list :connect (lambda (filter sentinel name environment-fn)
                    (let* ((final-command (lsp-resolve-final-function
                                           local-command))
-                          (stderr-buf (or (when generate-error-file-fn
-                                            (funcall generate-error-file-fn name))
-                                          (format "/tmp/%s-%s-stderr" name
-                                                  (cl-incf lsp--stderr-index))))
                           (process-name (generate-new-buffer-name name))
                           (process-environment
                            (lsp--compute-process-environment environment-fn))
@@ -7353,7 +7349,7 @@ returns the command to execute."
                                  :noquery t
                                  :filter filter
                                  :sentinel sentinel
-                                 :stderr stderr-buf
+                                 :stderr (get-buffer-create (format "*%s::stderr*" process-name))
                                  :file-handler t)))
                      (cons proc proc)))
         :test? (lambda () (-> local-command lsp-resolve-final-function lsp-server-present?))))
