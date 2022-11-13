@@ -7330,11 +7330,11 @@ returns the command to execute."
     (lsp-warn
      "Your tramp version - %s - might fail to work with remote LSP. Update to version 2.5 or greater (available on elpa)"
      tramp-version))
-  ;; Force a direct asynchronous process.
-  (add-to-list 'tramp-connection-properties
-               (list (regexp-quote (file-remote-p default-directory))
-                     "direct-async-process" t))
   (list :connect (lambda (filter sentinel name environment-fn)
+                   ;; Force a direct asynchronous process.
+                   (add-to-list 'tramp-connection-properties
+                                (list (regexp-quote (file-remote-p default-directory))
+                                      "direct-async-process" t))
                    (let* ((final-command (lsp-resolve-final-function
                                           local-command))
                           (process-name (generate-new-buffer-name name))
